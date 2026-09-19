@@ -65,32 +65,96 @@ unsigned getBoundedRandom(unsigned from, unsigned to)
 
 // --- END: Liberary ---
 
-
-
-void printResult(bool correctness, float typical_answer)
-{
-  if(correctness)
-  {
-    print("\033[42m\033[2J\033[H");
-    printLine("Right Answer :-)");
-  }
-  else
-  {
-    print("\a\033[41m\033[2J\033[H");
-    printLine("Wrong Answer :-(");
-    printLine("The right answer is: " + to_string(typical_answer));
-  }
-}
-
 enum Type {TYPE_ADD = 1, TYPE_SUB = 2, TYPE_MUL = 3, TYPE_DEV = 4, TYPE_MIX = 5};
-
 enum Level {EASY = 1, MED = 2, HARD = 3, LEVEL_MIX = 4};
-
 struct GameSettings {
   short questions_number;
   Level level;
   Type type;
 };
+
+
+string generateUnderscores(unsigned number)
+{
+  string underscores = "";
+  for(int i = 0; i < number; ++i)
+    underscores += "_";
+
+  return underscores;
+}
+
+string operation_to_string(Type operation_type)
+{
+  string types[5] = {"Add", "Sub", "Mul", "Dev", "Mix"};
+  return types[operation_type - 1];
+}
+
+string level_to_string(Level level)
+{
+  string levels[4] = {"Easy", "Med", "Hard", "Mix"};
+  return levels[level - 1];
+}
+
+void print_final_result_body(GameSettings game_settings, unsigned counter)
+{
+  printLine("");
+
+  printLine(" Number of Questions\t: " + 
+      to_string(game_settings.questions_number));
+  printLine(" Questions Level\t: " + level_to_string(game_settings.level));
+  printLine(" Operation Type\t\t: " + operation_to_string(game_settings.type));
+  printLine(" Number of Right Answers: " + to_string(counter));
+  printLine(" Number of Wrong Answers: " + 
+    to_string(game_settings.questions_number - counter));
+
+  printLine(generateUnderscores(20));
+  printLine("");
+}
+
+string final_result(bool is_pass)
+{
+  return is_pass
+    ? "Pass :-)"
+    : "Fail :-(";
+}
+
+void print_final_result_header(bool is_pass)
+{
+  printLine(generateUnderscores(20));
+  printLine("");
+  printLine(" Final result is " + final_result(is_pass));
+  printLine(generateUnderscores(20));
+}
+
+void affect(bool is_pass)
+{
+  if(is_pass)
+    print("\033[42m\033[2J\033[H");
+  else
+    print("\a\033[41m\033[2J\033[H");
+}
+
+void print_final_result(GameSettings game_settings, unsigned counter)
+{
+  bool is_pass = ((float) counter / game_settings.questions_number) >= 0.5;
+  
+  affect(is_pass);
+  print_final_result_header(is_pass);
+  print_final_result_body(game_settings, counter);
+}
+
+void printResult(bool correctness, float typical_answer)
+{
+  affect(correctness);
+
+  if(correctness)
+    printLine("Right Answer :-)");
+  else
+  {
+    printLine("Wrong Answer :-(");
+    printLine("The right answer is: " + to_string(typical_answer));
+  }
+}
 
 enum Operator {OPERATOR_ADD = 1, OPERATOR_SUB = 2, OPERATOR_MUL = 3, 
   OPERATOR_DEV = 4};
@@ -135,7 +199,7 @@ bool is_correct(Question question, float answer)
 
 char operator_to_string(Operator q_operator)
 {
-  char operators[4] = {'+', '-', '*', '/'};
+  char operators[4] = {'+', '-', 'x', '/'};
 
   return operators[q_operator - 1];
 }
@@ -202,11 +266,13 @@ bool play_question(short question_number, GameSettings game_settings)
 
 void play_questios(GameSettings game_settings)
 {
+  unsigned counter = 0;
   for(int num = 1; num <= game_settings.questions_number; ++num)
   {
-    play_question(num, game_settings);
-    
+    if(play_question(num, game_settings))
+      ++counter;
   }
+  print_final_result(game_settings, counter);
 }
 
 Level get_questions_level()
@@ -257,5 +323,5 @@ int main()
   GameSettings game_settings = get_game_settings();
   printLine("");
   play_questios(game_settings);
-  setDefaultTerminal();
+  // setDefaultTerminal();
 } 
