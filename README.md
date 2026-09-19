@@ -47,4 +47,6 @@ After you answered the all question you get your final result.
 ![Final Result](./photos/final-result.png)  
 
 And as you can see, that the game ask you if you want to play again or not? 
-Have you given up?
+Have you given up?  
+
+##### Let's Play :-)
