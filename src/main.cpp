@@ -229,6 +229,7 @@ void generate_question(Question question)
   printLine("__________");
 }
 
+
 Operator get_operator(Type type)
 {
   if(type == TYPE_MIX)
@@ -306,7 +307,7 @@ Level get_questions_level()
 Type get_questions_type()
 {
   short type = getBoundedIntegerUntil(1, 5, 
-    "Entery questions type [1] Add, [2] Sub, [3] Mul, [4] Div, [5] Mix ? ",
+    "Enter questions type [1] Add, [2] Sub, [3] Mul, [4] Div, [5] Mix ? ",
     "Wrong input, please try again...");
 
   return (Type) type;
