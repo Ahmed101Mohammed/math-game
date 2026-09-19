@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <ctime>
+#include <thread>
 
 using namespace std;
 
@@ -63,7 +64,23 @@ unsigned getBoundedRandom(unsigned from, unsigned to)
   return randomValue;
 }
 
+char getChar(string message)
+{
+  print(message);
+  char c;
+  cin >> c;
+
+  return c;
+}
+
 // --- END: Liberary ---
+
+bool wantToPlayMore()
+{
+  char wantMore = getChar("Do you want to play more? [Y/N]: ");
+
+  return (wantMore == 'y' || wantMore == 'Y');
+}
 
 enum Type {TYPE_ADD = 1, TYPE_SUB = 2, TYPE_MUL = 3, TYPE_DEV = 4, TYPE_MIX = 5};
 enum Level {EASY = 1, MED = 2, HARD = 3, LEVEL_MIX = 4};
@@ -251,6 +268,7 @@ void createQuestionHeader(short question_number, short questions_number)
 
 bool play_question(short question_number, GameSettings game_settings)
 {
+  printLine("");
   createQuestionHeader(question_number, game_settings.questions_number); 
   printLine("");
 
@@ -272,6 +290,7 @@ void play_questios(GameSettings game_settings)
     if(play_question(num, game_settings))
       ++counter;
   }
+  this_thread::sleep_for(chrono::seconds(2));
   print_final_result(game_settings, counter);
 }
 
@@ -317,11 +336,24 @@ GameSettings get_game_settings()
 
   return game_settings;
 }
+
+void play_game()
+{
+  bool play_more = true;
+
+  while(play_more)
+  {
+    GameSettings game_settings = get_game_settings();
+    play_questios(game_settings);
+    play_more = wantToPlayMore();
+  }
+
+  setDefaultTerminal();
+}
+
 int main()
 {
   srand(time(nullptr));
-  GameSettings game_settings = get_game_settings();
-  printLine("");
-  play_questios(game_settings);
-  // setDefaultTerminal();
+  
+  play_game();
 } 
