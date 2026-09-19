@@ -43,7 +43,7 @@ and my answer.
 Then you get the result of your answer, and the next question.  
 ![Question Answer](./photos/result.png)  
 
-After you answered the all question you get your final result.  
+After you answered all question, you get your final result.  
 ![Final Result](./photos/final-result.png)  
 
 And as you can see, that the game ask you if you want to play again or not? 
